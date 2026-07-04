@@ -46,7 +46,7 @@ public class DataManager{
         string jsStudents = JsonSerializer.Serialize(Students, options);
         File.WriteAllText("students.txt", jsStudents);
         string jsSubjects = JsonSerializer.Serialize(Subjects, options);
-        File.WriteAllText("subject.txt", jsSubjects);
+        File.WriteAllText("subjects.txt", jsSubjects);
         string jsTeachers = JsonSerializer.Serialize(Teachers, options);
         File.WriteAllText("teachers.txt", jsTeachers);
         string jsLessons = JsonSerializer.Serialize(Lessons, options);
