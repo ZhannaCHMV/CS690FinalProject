@@ -1,0 +1,30 @@
+[
+  {
+    "Id": 1,
+    "Name": "Dan Balan",
+    "CompletionCurrentLevel": false,
+    "EducationLevel": 1,
+    "NeedForMakeUpLesson": false
+  },
+  {
+    "Id": 2,
+    "Name": "Alex Ku",
+    "CompletionCurrentLevel": false,
+    "EducationLevel": 0,
+    "NeedForMakeUpLesson": false
+  },
+  {
+    "Id": 3,
+    "Name": "Mark Been",
+    "CompletionCurrentLevel": false,
+    "EducationLevel": 0,
+    "NeedForMakeUpLesson": false
+  },
+  {
+    "Id": 4,
+    "Name": "Martinius Smit",
+    "CompletionCurrentLevel": false,
+    "EducationLevel": 0,
+    "NeedForMakeUpLesson": false
+  }
+]
