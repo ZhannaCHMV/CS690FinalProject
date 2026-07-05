@@ -11,30 +11,36 @@ public class DataManager{
 
     }
     public void LoadData(){
-        if (!File.Exists("payments.txt")) return;
-        string jsPayments = File.ReadAllText("payments.txt");
-        List<Payment> loadedPayments  = JsonSerializer.Deserialize<List<Payment>>(jsPayments);
-        Payments.AddRange(loadedPayments);
-        if (!File.Exists("rooms.txt")) return;
-        string jsRooms = File.ReadAllText("rooms.txt");
-        List<Room> loadedRooms  = JsonSerializer.Deserialize<List<Room>>(jsRooms);
-        Rooms.AddRange(loadedRooms);
-        if (!File.Exists("students.txt")) return;
-        string jsStudents = File.ReadAllText("students.txt");
-        List<Student> loadedStudents  = JsonSerializer.Deserialize<List<Student>>(jsStudents);
-        Students.AddRange(loadedStudents);
-        if (!File.Exists("subjects.txt")) return;
-        string jsSubjects = File.ReadAllText("subjects.txt");
-        List<Subject> loadedSubjects  = JsonSerializer.Deserialize<List<Subject>>(jsSubjects);
-        Subjects.AddRange(loadedSubjects);
-        if (!File.Exists("teachers.txt")) return;
-        string jsTeachers = File.ReadAllText("teachers.txt");
-        List<Teacher> loadedTeachers  = JsonSerializer.Deserialize<List<Teacher>>(jsTeachers);
-        Teachers.AddRange(loadedTeachers);
-        if (!File.Exists("lessons.txt")) return;
-        string jsLessons = File.ReadAllText("lessons.txt");
-        List<Lesson> loadedLessons  = JsonSerializer.Deserialize<List<Lesson>>(jsLessons);
-        Lessons.AddRange(loadedLessons);
+        if (File.Exists("payments.txt")){
+            string jsPayments = File.ReadAllText("payments.txt");
+            List<Payment> loadedPayments  = JsonSerializer.Deserialize<List<Payment>>(jsPayments);
+            Payments.AddRange(loadedPayments);
+        }
+        if (File.Exists("rooms.txt")){
+            string jsRooms = File.ReadAllText("rooms.txt");
+            List<Room> loadedRooms  = JsonSerializer.Deserialize<List<Room>>(jsRooms);
+            Rooms.AddRange(loadedRooms);
+        }
+        if (File.Exists("students.txt")){
+            string jsStudents = File.ReadAllText("students.txt");
+            List<Student> loadedStudents  = JsonSerializer.Deserialize<List<Student>>(jsStudents);
+            Students.AddRange(loadedStudents);
+        }
+        if (File.Exists("subjects.txt")){
+            string jsSubjects = File.ReadAllText("subjects.txt");
+            List<Subject> loadedSubjects  = JsonSerializer.Deserialize<List<Subject>>(jsSubjects);
+            Subjects.AddRange(loadedSubjects);
+        }
+        if (File.Exists("teachers.txt")){
+            string jsTeachers = File.ReadAllText("teachers.txt");
+            List<Teacher> loadedTeachers  = JsonSerializer.Deserialize<List<Teacher>>(jsTeachers);
+            Teachers.AddRange(loadedTeachers);
+        }
+        if (File.Exists("lessons.txt")){
+            string jsLessons = File.ReadAllText("lessons.txt");
+            List<Lesson> loadedLessons  = JsonSerializer.Deserialize<List<Lesson>>(jsLessons);
+            Lessons.AddRange(loadedLessons);
+        }
 
     }
     public void SaveData(){
@@ -71,7 +77,7 @@ public class DataManager{
         List<int> reservedRoomIds = new List<int>();
         foreach(var lesson in Lessons){
             if (lesson.Date == date && lesson.TimeSlot == timeSlot){
-                reservedRoomIds.Append(lesson.RoomId);
+                reservedRoomIds.Add(lesson.RoomId);
             }
         }
         return reservedRoomIds;
@@ -80,7 +86,7 @@ public class DataManager{
         List<int> reservedTeacherIds = new List<int>();
         foreach(var lesson in Lessons){
             if (lesson.Date == date && lesson.TimeSlot == timeSlot){
-                reservedTeacherIds.Append(lesson.TeacherId);
+                reservedTeacherIds.Add(lesson.TeacherId);
             }
         }
         return reservedTeacherIds;
@@ -101,12 +107,16 @@ public class DataManager{
         List<Room> availableRooms = new List<Room>();
         List<int> reservedRoomIds = GetReservedRoomIds(date, timeSlot);
         foreach (var room in Rooms){
+            bool isReserved = false;
             foreach (var roomId in reservedRoomIds){
-                if (room.Id != roomId){
-                    continue;
+                if (room.Id == roomId){
+                    isReserved = true;
+                    break;
                 }
             }
-            availableRooms.Add(room);
+            if (!isReserved){
+                availableRooms.Add(room);
+            }
         }
         return availableRooms;
     }
@@ -114,13 +124,17 @@ public class DataManager{
         List<Teacher> availableTeachers = new List<Teacher>();
         List<int> reservedTeacherIds = GetReservedTeacherIds(date, timeSlot);
         foreach (var teacher in Teachers){
+            bool isReserved = false;
             foreach (var teacherId in reservedTeacherIds){
-                if (teacher.Id != teacherId){
-                    continue;
+                if (teacher.Id == teacherId){
+                    isReserved = true;
+                    break;
                 }
             }
-            if (teacher.SubjectId == subjectId){
-                availableTeachers.Add(teacher);
+            if (!isReserved){
+                if (teacher.SubjectId == subjectId){
+                  availableTeachers.Add(teacher);
+                }
             }
         }
         return availableTeachers;

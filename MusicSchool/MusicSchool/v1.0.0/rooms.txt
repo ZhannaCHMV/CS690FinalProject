@@ -1,14 +1,14 @@
 [
   {
     "Id": 1,
-    "Name": "piano"
+    "Name": "room 1"
   },
   {
     "Id": 2,
-    "Name": "vocal"
+    "Name": "room 2"
   },
   {
     "Id": 3,
-    "Name": "guitar"
+    "Name": "room 3"
   }
 ]

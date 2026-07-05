@@ -8,43 +8,27 @@
     "TeacherId": 1
   },
   {
-    "Date": "2026-06-20",
-    "TimeSlot": 0,
+    "Date": "2026-07-01",
+    "TimeSlot": 2,
     "SubjectId": 1,
     "RoomId": 1,
-    "StudentId": 1,
+    "StudentId": 2,
     "TeacherId": 1
   },
   {
-    "Date": "2026-07-03",
-    "TimeSlot": 0,
-    "SubjectId": 1,
-    "RoomId": 1,
-    "StudentId": 1,
-    "TeacherId": 2
-  },
-  {
-    "Date": "2026-05-19",
-    "TimeSlot": 0,
-    "SubjectId": 1,
-    "RoomId": 1,
-    "StudentId": 1,
-    "TeacherId": 1
-  },
-  {
-    "Date": "2026-05-19",
-    "TimeSlot": 5,
-    "SubjectId": 1,
-    "RoomId": 1,
-    "StudentId": 1,
+    "Date": "2026-07-01",
+    "TimeSlot": 1,
+    "SubjectId": 3,
+    "RoomId": 2,
+    "StudentId": 4,
     "TeacherId": 3
   },
   {
-    "Date": "2026-06-30",
-    "TimeSlot": 0,
-    "SubjectId": 1,
-    "RoomId": 1,
-    "StudentId": 1,
-    "TeacherId": 1
+    "Date": "2026-07-01",
+    "TimeSlot": 1,
+    "SubjectId": 2,
+    "RoomId": 3,
+    "StudentId": 3,
+    "TeacherId": 2
   }
 ]

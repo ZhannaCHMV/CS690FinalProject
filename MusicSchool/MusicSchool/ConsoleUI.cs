@@ -61,7 +61,7 @@ public class ConsoleUI{
             Lesson lesson = new Lesson(selectedDate, 
             selectedAvailableTimeSlot.TimeSlot, 
             selectedSubject.Id, selectedAvailableTimeSlot.Room.Id, 
-            selectedStudent.Id, selectedAvailableTimeSlot.Teacher.Id);
+            selectedAvailableTimeSlot.Teacher.Id,selectedStudent.Id);
 
             _dataManager.Lessons.Add(lesson);
             _dataManager.SaveData();
