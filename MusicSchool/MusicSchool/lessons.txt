@@ -30,5 +30,21 @@
     "RoomId": 3,
     "StudentId": 3,
     "TeacherId": 2
+  },
+  {
+    "Date": "2026-06-30",
+    "TimeSlot": 1,
+    "SubjectId": 1,
+    "RoomId": 1,
+    "StudentId": 2,
+    "TeacherId": 1
+  },
+  {
+    "Date": "2026-07-22",
+    "TimeSlot": 0,
+    "SubjectId": 1,
+    "RoomId": 1,
+    "StudentId": 1,
+    "TeacherId": 1
   }
 ]
