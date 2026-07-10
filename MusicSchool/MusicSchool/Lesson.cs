@@ -1,11 +1,11 @@
 namespace MusicSchool;
 public class Lesson{
-    public DateOnly Date {get;init;}
-    public TimeSlot TimeSlot {get;init;}
+    public DateOnly Date {get;set;}
+    public TimeSlot TimeSlot {get;set;}
     public int SubjectId {get;init;}
-    public int RoomId {get;init;}
+    public int RoomId {get;set;}
     public int StudentId {get;init;}
-    public int TeacherId {get;init;}
+    public int TeacherId {get;set;}
     public Lesson(DateOnly date, 
                 TimeSlot timeSlot, 
                 int subjectId, 

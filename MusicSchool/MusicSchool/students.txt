@@ -4,7 +4,7 @@
     "Name": "Dan Balan",
     "CompletionCurrentLevel": false,
     "EducationLevel": 1,
-    "NeedForMakeUpLesson": false
+    "NeedForMakeUpLesson": true
   },
   {
     "Id": 2,
@@ -18,13 +18,13 @@
     "Name": "Mark Been",
     "CompletionCurrentLevel": false,
     "EducationLevel": 0,
-    "NeedForMakeUpLesson": false
+    "NeedForMakeUpLesson": true
   },
   {
     "Id": 4,
     "Name": "Martinius Smit",
     "CompletionCurrentLevel": false,
     "EducationLevel": 0,
-    "NeedForMakeUpLesson": false
+    "NeedForMakeUpLesson": true
   }
 ]

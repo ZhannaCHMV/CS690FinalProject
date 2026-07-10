@@ -15,6 +15,10 @@ public class ConsoleUI{
                     "Daily schedule report",
                     "Student's payment",
                     "Report on student status",
+                    "Registering a need for makeup lessons",
+                    "Report on students who need makeup lessons",
+                    "Rescheduling the lesson",
+                    "Canceling and removing a lesson",
                     "Exit"
                 })
             );
@@ -26,6 +30,14 @@ public class ConsoleUI{
                 RegisterStudentPayment();
             }else if (mainMenu == "Report on student status"){
                 GetReportOnStudentStatus();
+            }else if (mainMenu == "Registering a need for makeup lessons"){
+                RegisterNeedForMakeUpLesson();
+            }else if (mainMenu == "Report on students who need makeup lessons"){
+                GetReportOnStudentMakeUpLesson();
+            }else if (mainMenu == "Rescheduling the lesson"){
+                ReschedulingLesson();        
+            }else if (mainMenu == "Canceling and removing a lesson"){
+                CancelingRemovingLesson();       
             }else if (mainMenu == "Exit"){
                 return;
             }
@@ -45,7 +57,7 @@ public class ConsoleUI{
         }
         AvailableTimeSlot selectedAvailableTimeSlot = ChooseAvailableTimeSlot(availableTimeSlots);
         AnsiConsole.MarkupLine ($"Selected time slot: {selectedAvailableTimeSlot.TimeSlot.ToStr()}");
-        Student selectedStudent = ChooseStudent();
+        Student selectedStudent = ChooseStudentAddNewStudent();
         if(selectedStudent == null){
             return;
         }
@@ -101,7 +113,7 @@ public class ConsoleUI{
             );
         return selectedActionSaveOrExit;
     }
-    public Student? ChooseStudent(){
+    public Student? ChooseStudentAddNewStudent(){
         var menuStudentList = _dataManager.Students.Select(s=> new StudentMenuItem(s)).ToList();
         menuStudentList.Add(new StudentMenuItem("Add new student"));
         var selectedMenuStudent = AnsiConsole.Prompt(
@@ -114,6 +126,7 @@ public class ConsoleUI{
             string selectedActionSaveOrExit = ChooseActionSaveOrExit();
             if(selectedActionSaveOrExit == "Save"){
                 Student newStudent = _dataManager.AddNewStudent(newStudentName);
+                _dataManager.SaveData();
                 return newStudent;
             }else{
                 return null;
@@ -200,7 +213,7 @@ public class ConsoleUI{
         if(selectedStudent == null){
             return;
         }
-        AnsiConsole.MarkupLine ("Selected student: {selectedStudent.name}");
+        AnsiConsole.MarkupLine ($"Selected student: {selectedStudent.Name}");
         var selectedYearPrompt  = new TextPrompt<int>("Enter year (2026-2036):")
             .ValidationErrorMessage("[red]Please enter a valid number![/]")
             .Validate(year => {
@@ -228,6 +241,155 @@ public class ConsoleUI{
             .Title("For return to main menu choose 'Back to main menu'").
             AddChoices(new[] { "Back to main menu"}));
     }
+    public void RegisterNeedForMakeUpLesson(){
+        AnsiConsole.MarkupLine ("Registering a need for makeup lessons"); 
+        Student selectedStudent = ChooseStudent();
+        AnsiConsole.MarkupLine ($"Selected student: {selectedStudent.Name}");
+        if(selectedStudent.NeedForMakeUpLesson){
+            AnsiConsole.MarkupLine ($"For the student already there is a registered need for the makeup lesson");
+            AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+            .Title("For return to main menu choose 'Back to main menu'").
+            AddChoices(new[] { "Back to main menu"}));
+            return;
+        }
+        selectedStudent.RegisterNeedForMakeUpLesson();
+        _dataManager.SaveData();
+        AnsiConsole.MarkupLine ($"The need for the makeup lesson is registered");
+        AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+            .Title("For return to main menu choose 'Back to main menu'").
+            AddChoices(new[] { "Back to main menu"}));
 
- 
+    }   
+    public Student ChooseStudent(){
+        var selectedStudent = AnsiConsole.Prompt(
+                new SelectionPrompt<Student>()
+                .Title("Choose student")
+                .UseConverter(s => s.Name)
+                .AddChoices(_dataManager.Students)); 
+        return selectedStudent;   
+    }
+    public void GetReportOnStudentMakeUpLesson(){
+        AnsiConsole.MarkupLine("Report on students make up lesson");
+        List<Student> needForMakeUpLessonReport = _dataManager.GetNeedForMakeUpLessonReport();
+        if(needForMakeUpLessonReport.Count == 0){
+            AnsiConsole.MarkupLine ($"There no students who is marked for the make up lesson");
+            AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("For return to main menu choose 'Back to main menu'").
+                AddChoices(new[] { "Back to main menu"}));
+            return;
+        }
+        foreach(var student in needForMakeUpLessonReport){
+            AnsiConsole.MarkupLine(student.Name);
+            
+        }
+        AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("For return to main menu choose 'Back to main menu'").
+                AddChoices(new[] { "Back to main menu"}));
+        return;
+
+    }
+    public void ReschedulingLesson(){
+        AnsiConsole.MarkupLine("ReschedulingLesson");
+        Subject selectedSubject = ChooseSubject();
+        AnsiConsole.MarkupLine ($"Selected subject: {selectedSubject.Name}");
+        while(true){
+            DateOnly selectedDate = EnterDate();
+            AnsiConsole.MarkupLine ($"Selected date: {selectedDate}");
+            
+            List<Lesson> lessonBySubjectId = _dataManager.GetLessonsBySubjectId(selectedDate, selectedSubject.Id);
+            if(lessonBySubjectId.Count == 0){
+                AnsiConsole.MarkupLine("There no lesson on selected date");
+                AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title("For return to enter date 'Back to enter date'").
+                    AddChoices(new[] { "Back to enter date"}));
+            continue;
+            }
+            var selectedLesson = AnsiConsole.Prompt(
+                    new SelectionPrompt<Lesson>()
+                    .Title("Choose lesson")
+                    .UseConverter(ls => $"{ls.TimeSlot.ToStr()}    {_dataManager.GetSubject(ls.SubjectId).Name}    {_dataManager.GetStudent(ls.StudentId).Name}")
+                    .AddChoices(lessonBySubjectId));
+            AnsiConsole.MarkupLine($"Selected lesson {selectedLesson.TimeSlot.ToStr()}");
+            DateOnly selectedNewDate =  EnterNewDate();
+            List<AvailableTimeSlot> availableTimeSlots = _dataManager.GetAvailableTimeSlots(selectedNewDate,_dataManager.GetSubject(selectedSubject.Id));
+            if(availableTimeSlots.Count == 0){
+                AnsiConsole.MarkupLine ("There are not available time slots on selected date");
+                AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                    .Title("For return to enter date 'Back to enter date'").
+                    AddChoices(new[] { "Back to enter date"}));
+                continue;
+            }AvailableTimeSlot selectedAvailableTimeSlot = ChooseAvailableTimeSlot(availableTimeSlots);
+            AnsiConsole.MarkupLine ($"Selected time slot: {selectedAvailableTimeSlot.TimeSlot.ToStr()}");
+            bool isStudentAssignmentToLesson = _dataManager.IsStudentAssignmentToLesson(selectedNewDate,selectedAvailableTimeSlot.TimeSlot,selectedLesson.StudentId);
+            if (isStudentAssignmentToLesson){
+                AnsiConsole.MarkupLine($"Selected student: {_dataManager.GetStudent(selectedLesson.StudentId).Name} already has lesson at {selectedAvailableTimeSlot.TimeSlot.ToStr()} on {selectedNewDate}");
+                AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                    .Title("For return to enter date 'Back to enter date'").
+                    AddChoices(new[] { "Back to enter date"}));
+                continue;
+            }
+            string selectedActionSaveOrExit = ChooseActionSaveOrExit();
+            if(selectedActionSaveOrExit == "Save"){
+                selectedLesson.Date = selectedNewDate;
+                selectedLesson.TimeSlot = selectedAvailableTimeSlot.TimeSlot;
+                selectedLesson.RoomId = selectedAvailableTimeSlot.Room.Id;
+                selectedLesson.TeacherId = selectedAvailableTimeSlot.Teacher.Id;
+                _dataManager.SaveData();
+                return;
+            }
+        }
+        
+    }
+    public DateOnly EnterNewDate(){
+        var datePrompt= new TextPrompt<DateOnly>("Enter new date (yyyy-mm-dd)")
+            .ValidationErrorMessage("Wrong date format");
+        DateOnly selectedDate = AnsiConsole.Prompt(datePrompt);
+        return selectedDate;
+    }
+    public void CancelingRemovingLesson(){
+        AnsiConsole.MarkupLine("Canceling and removing a lesson");
+        Subject selectedSubject = ChooseSubject();
+        AnsiConsole.MarkupLine ($"Selected subject: {selectedSubject.Name}");
+        while(true){
+            DateOnly selectedDate = EnterDate();
+            AnsiConsole.MarkupLine ($"Selected date: {selectedDate}");
+            List<Lesson> lessonBySubjectId = _dataManager.GetLessonsBySubjectId(selectedDate, selectedSubject.Id);
+            if(lessonBySubjectId.Count == 0){
+                AnsiConsole.MarkupLine("There no lesson on selected date");
+                var selectedMenuItem = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title("For return to enter date 'Back to enter date'").
+                    AddChoices(new[] { "Back to enter date", "Back to main menu"}));
+                if (selectedMenuItem == "Back to enter date"){
+                    continue;
+                }
+                else{
+                    return;
+                }
+                
+            }
+            var selectedLesson = AnsiConsole.Prompt(
+                    new SelectionPrompt<Lesson>()
+                    .Title("Choose lesson")
+                    .UseConverter(ls => $"{ls.TimeSlot.ToStr()}    {_dataManager.GetSubject(ls.SubjectId).Name}    {_dataManager.GetStudent(ls.StudentId).Name}")
+                    .AddChoices(lessonBySubjectId));
+            _dataManager.Lessons.Remove(selectedLesson);
+            _dataManager.SaveData();
+            AnsiConsole.MarkupLine("The selected lesson is removed from schedule");
+            AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                    .Title("For return to enter date 'Back to enter date'").
+                    AddChoices(new[] { "Back to enter date"}));
+            return;
+
+        }
+    }
+
 }

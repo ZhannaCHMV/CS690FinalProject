@@ -149,7 +149,6 @@ public class DataManager{
         int newId = maxId + 1;
         Student newStudent = new Student(newId, name, false, EducationLevel.beginner ,false);
         Students.Add(newStudent);
-        SaveData();
         return newStudent;
     }
     public List<Lesson> GetDailyLessonReport(DateOnly date){
@@ -214,5 +213,23 @@ public class DataManager{
             }
         }
         return IsStudentHasPaid;
+    }
+    public List<Student> GetNeedForMakeUpLessonReport(){
+        List<Student> needForMakeUpLessonReport = new List<Student>();
+        foreach (var student in Students){
+            if(student.NeedForMakeUpLesson){
+                needForMakeUpLessonReport.Add(student);
+            }
+        }
+        return needForMakeUpLessonReport;
+    }
+    public List<Lesson> GetLessonsBySubjectId(DateOnly date, int subjectId){
+        List<Lesson> lessonBySubjectId = new List<Lesson>(); 
+        foreach(var lesson in Lessons){
+            if(lesson.Date == date && lesson.SubjectId == subjectId){
+                lessonBySubjectId.Add(lesson);
+            }
+        }
+        return lessonBySubjectId;
     }
 }
