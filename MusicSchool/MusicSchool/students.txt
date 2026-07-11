@@ -11,7 +11,7 @@
     "Name": "Alex Ku",
     "CompletionCurrentLevel": false,
     "EducationLevel": 0,
-    "NeedForMakeUpLesson": false
+    "NeedForMakeUpLesson": true
   },
   {
     "Id": 3,

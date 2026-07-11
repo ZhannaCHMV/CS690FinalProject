@@ -15,6 +15,9 @@ public class ConsoleUI{
                     "Daily schedule report",
                     "Student's payment",
                     "Report on student status",
+                    "Mark current level of study as completed",
+                    "Transfer a student to the next level of study",
+                    "Show a student's education level and a status of completion current level",
                     "Registering a need for makeup lessons",
                     "Report on students who need makeup lessons",
                     "Rescheduling the lesson",
@@ -30,6 +33,12 @@ public class ConsoleUI{
                 RegisterStudentPayment();
             }else if (mainMenu == "Report on student status"){
                 GetReportOnStudentStatus();
+            }else if (mainMenu == "Mark current level of study as completed"){
+                MarkCurrentLevelAsCompleted();   
+            }else if (mainMenu == "Show a student's education level and a status of completion current level"){
+                ShowStudentsEducationLevelAndStatusOfCompletionCurrentLevel();     
+            }else if (mainMenu == "Transfer a student to the next level of study"){
+                TransferStudentToNextLevelOfStudy();     
             }else if (mainMenu == "Registering a need for makeup lessons"){
                 RegisterNeedForMakeUpLesson();
             }else if (mainMenu == "Report on students who need makeup lessons"){
@@ -391,5 +400,69 @@ public class ConsoleUI{
 
         }
     }
+    public void MarkCurrentLevelAsCompleted(){
+        AnsiConsole.MarkupLine("Mark current level of study as completed");
+        Student selectedStudent = ChooseStudent();
+        if(selectedStudent.CompletionCurrentLevel){
+            AnsiConsole.MarkupLine("Current level of study is already marked as completed");
+            AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("For return to main menu choose 'Back to main menu'").
+                AddChoices(new[] { "Back to main menu"}));
+            return;
+        }
+        selectedStudent.MarkCurrentLevelAsCompleted();
+        _dataManager.SaveData();
+        AnsiConsole.MarkupLine("Student's current level of study is marked as completed");
+            AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("For return to main menu choose 'Back to main menu'").
+                AddChoices(new[] { "Back to main menu"}));
+            return;
+    }
+    public void TransferStudentToNextLevelOfStudy(){
+        AnsiConsole.MarkupLine("Transfer a student to the next of study");
+        Student selectedStudent = ChooseStudent();
+        if(!selectedStudent.CompletionCurrentLevel){
+            AnsiConsole.MarkupLine("Transfer is not allowed. The current level is not completed");
+            AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("For return to main menu choose 'Back to main menu'").
+                AddChoices(new[] { "Back to main menu"}));
+            return;
+        } else if(selectedStudent.EducationLevel == EducationLevel.diploma){
+            AnsiConsole.MarkupLine("Current level is highest");
+            AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("For return to main menu choose 'Back to main menu'").
+                AddChoices(new[] { "Back to main menu"}));
+            return;
+        } else{
+            selectedStudent.NextEducationLevel();
+            _dataManager.SaveData();
+        }
+
+    }                
+    public void ShowStudentsEducationLevelAndStatusOfCompletionCurrentLevel(){
+        AnsiConsole.MarkupLine("Show a student's education level and a status of completion current level");
+        Student selectedStudent = ChooseStudent();
+        if(!selectedStudent.CompletionCurrentLevel){
+            AnsiConsole.MarkupLine($"Current education level {selectedStudent.EducationLevel.ToString()}. Current level is not completed");
+            AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("For return to main menu choose 'Back to main menu'").
+                AddChoices(new[] { "Back to main menu"}));
+            return;
+        }else{
+            AnsiConsole.MarkupLine($"Current education level {selectedStudent.EducationLevel.ToString()}. Current level is completed");
+            AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("For return to main menu choose 'Back to main menu'").
+                AddChoices(new[] { "Back to main menu"}));
+            return;
+        }
+
+    }
+    
 
 }
